@@ -19,8 +19,9 @@ export class AppComponent {
     //shared service: This is using forRoot in it's module, and the service is provided in the module and the module is imported in app.module. So service is registered in the root injector context
     //OrderService: Service is using providedIn: root. So service is registered in the root injector context
     //EagerService: Service is provided in it's module and the module is imported in the app.module. So service is registered in the root injector context
-    private customer: CustomerService // This won't instantiate the customer service constructor like order service because customer service is part of customers lazy module and this service isn't using the providedin: root decorator like orders service. In other terms the customer service is privatized
-  ) {
+    private customer: CustomerService // This will instantiate the customer service constructor. My guess is because it is being provided in the providers array of the app.module. So it is registering it in it's injector context. And when app.comp is using it in it's contructor, it is initializing the customer service. For other servies I didn't need to provide it in app.module as they got registered due to above reasons. If this service is tried to be accessed without being provided in the app.module, it gives error
+  ) //Note:: When the customer lazy module actually gets loaded and a component in it tries to initialize the customer service, customer service gets initialized again. That makes 2 instances of the same service. All the other service have 1 instance only
+  {
     this.shared.sayHello('app component');
   }
 }
